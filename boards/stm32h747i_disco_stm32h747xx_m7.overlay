@@ -1,0 +1,40 @@
+
+
+
+/delete-node/ &sram2;
+
+/ {
+	chosen {
+		
+		zephyr,sram = &sram0;
+	};
+};
+
+&sram1 {
+	reg = <0x30000000 DT_SIZE_K(256)>;
+};
+&spi5 {
+    status = "okay";
+    /* 注意：這裡移除了 spi5_nss_pk1，只保留 SCK, MISO, MOSI */
+    pinctrl-0 = <&spi5_sck_pk0 &spi5_miso_pj11 &spi5_mosi_pj10>;
+    pinctrl-names = "default";
+    dmas = <&dmamux1 0 39 0x400>,
+	       <&dmamux1 1 40 0x400>;
+	dma-names = "rx", "tx";
+    cs-gpios = <&gpiok 1 GPIO_ACTIVE_LOW>;
+};
+/* 確保 DMAMUX1 與 DMA1 已經開啟 */
+&dmamux1 {
+	status = "okay";
+};
+
+&dma1 {
+	status = "okay";
+};
+
+&uart8 {
+    status = "okay";
+    current-speed = <921600>;
+    pinctrl-0 = <&uart8_tx_pj8 &uart8_rx_pj9>;
+    pinctrl-names = "default";
+};
